@@ -1,11 +1,11 @@
 const fireArray = [];
 const fireWidth = 60;
 const fireHeight = 70;
-const canvasCellSize = 2
+const canvasCellSize = 8
 const fireSourceValue = 36
 const isDebugActive = false
-const windForce = 2
-const maxDecay = 6
+let windForce = 2
+let maxDecay = 6
 
 const canvas = getCanvasElement()
 const globalCanvasContext = canvas.getContext("2d")
@@ -16,6 +16,7 @@ function start() {
     initializeFireArray()
     initializeCanvas()
     createFireSource()
+    addEventListenerToDOMInputs()
 
     setInterval(calculateFirePropagation, 50)
 }
@@ -41,6 +42,14 @@ function createFireSource() {
         fireArray[firstCellFromBottomLineIndex + i] = fireSourceValue
     }
 }
+
+function addEventListenerToDOMInputs() {
+    document.getElementById("fire_decay").addEventListener("change",
+function() {maxDecay = this.value})
+    document.getElementById("wind_force").addEventListener("change",
+function() {windForce = this.value})
+}
+
 function getCanvasElement() {
     return document.querySelector("#canvas")
 }
