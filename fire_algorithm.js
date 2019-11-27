@@ -1,9 +1,9 @@
 const fireArray = [];
-const fireWidth = 60;
-const fireHeight = 70;
-const canvasCellSize = 8
-const fireSourceValue = 36
-const isDebugActive = false
+let fireWidth = 60;
+let fireHeight = 60;
+let canvasCellSize = 10
+let fireSourceValue = 36
+let isDebugActive = false
 let windForce = 2
 let maxDecay = 6
 
@@ -12,18 +12,23 @@ const globalCanvasContext = canvas.getContext("2d")
 
 const fireColorsPalette = [{"red":7,"green":7,"blue":7,"alpha":255},{"red":31,"green":7,"blue":7,"alpha":255},{"red":47,"green":15,"blue":7,"alpha":255},{"red":71,"green":15,"blue":7,"alpha":255},{"red":87,"green":23,"blue":7,"alpha":255},{"red":103,"green":31,"blue":7,"alpha":255},{"red":119,"green":31,"blue":7,"alpha":255},{"red":143,"green":39,"blue":7,"alpha":255},{"red":159,"green":47,"blue":7,"alpha":255},{"red":175,"green":63,"blue":7,"alpha":255},{"red":191,"green":71,"blue":7,"alpha":255},{"red":199,"green":71,"blue":7,"alpha":255},{"red":223,"green":79,"blue":7,"alpha":255},{"red":223,"green":87,"blue":7,"alpha":255},{"red":223,"green":87,"blue":7,"alpha":255},{"red":215,"green":95,"blue":7,"alpha":255},{"red":215,"green":95,"blue":7,"alpha":255},{"red":215,"green":103,"blue":15,"alpha":255},{"red":207,"green":111,"blue":15,"alpha":255},{"red":207,"green":119,"blue":15,"alpha":255},{"red":207,"green":127,"blue":15,"alpha":255},{"red":207,"green":135,"blue":23,"alpha":255},{"red":199,"green":135,"blue":23,"alpha":255},{"red":199,"green":143,"blue":23,"alpha":255},{"red":199,"green":151,"blue":31,"alpha":255},{"red":191,"green":159,"blue":31,"alpha":255},{"red":191,"green":159,"blue":31,"alpha":255},{"red":191,"green":167,"blue":39,"alpha":255},{"red":191,"green":167,"blue":39,"alpha":255},{"red":191,"green":175,"blue":47,"alpha":255},{"red":183,"green":175,"blue":47,"alpha":255},{"red":183,"green":183,"blue":47,"alpha":255},{"red":183,"green":183,"blue":55,"alpha":255},{"red":207,"green":207,"blue":111,"alpha":255},{"red":223,"green":223,"blue":159,"alpha":255},{"red":239,"green":239,"blue":199,"alpha":255},{"red":255,"green":255,"blue":255,"alpha":255}]
 
-function start() {
+function start(firstTime = true) {
     initializeFireArray()
     initializeCanvas()
-    createFireSource()
-    addEventListenerToDOMInputs()
+    setFireSource()
 
-    setInterval(calculateFirePropagation, 50)
+    if (firstTime) {
+        addEventListenerToDOMInputs()
+
+        setInterval(calculateFirePropagation, 50)
+    }
+}
+
+function getNumberOfPixels() {
+    return fireWidth * fireHeight
 }
 
 function initializeFireArray() {
-    function getNumberOfPixels() {return fireWidth * fireHeight}
-
     const numberOfPixels = getNumberOfPixels();
     
     for (let i = 0; i < numberOfPixels; ++i) {
@@ -36,7 +41,7 @@ function initializeCanvas() {
     setCanvasFont(globalCanvasContext)
 }
 
-function createFireSource() {
+function setFireSource() {
     for (let i = 0; i < fireWidth; ++i) {
         const firstCellFromBottomLineIndex = (fireHeight-1) * fireWidth
         fireArray[firstCellFromBottomLineIndex + i] = fireSourceValue
@@ -44,10 +49,46 @@ function createFireSource() {
 }
 
 function addEventListenerToDOMInputs() {
-    document.getElementById("fire_decay").addEventListener("change",
-function() {maxDecay = this.value})
-    document.getElementById("wind_force").addEventListener("change",
-function() {windForce = this.value})
+    document.getElementById("fire_decay").addEventListener("change", function() {maxDecay = this.value})
+    document.getElementById("wind_force").addEventListener("change", function() {windForce = this.value})
+    document.getElementById("activate_debug").addEventListener("change", function() {isDebugActive = this.checked})
+    document.getElementById("fire_source++").addEventListener("click", function() {changeFireSourceByValue(1)})
+    document.getElementById("fire_source--").addEventListener("click", function() {changeFireSourceByValue(-1)})
+    document.getElementById("canvas_height").addEventListener("change", function() {
+        fireHeight = this.value
+        reset()
+    })
+    document.getElementById("canvas_width").addEventListener("change", function() {
+        fireWidth = this.value
+        reset()
+    })
+    document.getElementById("canvas_pixel_size").addEventListener("change", function() {
+        canvasCellSize = this.value
+        reset()
+    })
+}
+
+function changeFireSourceByValue(value) {
+    function checkIfNewValueIsNotOutOfRange() {
+        return (value > 0 && fireSourceValue < 36)
+        || (value < 0 && fireSourceValue > 0)
+    }
+    
+    if (checkIfNewValueIsNotOutOfRange())
+    {
+        fireSourceValue += value
+
+        setFireSource()
+    }
+}
+
+function reset() {
+    function clearFireArray() {
+        fireArray.splice(0)
+    }
+
+    clearFireArray()
+    start(false)
 }
 
 function getCanvasElement() {

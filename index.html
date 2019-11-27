@@ -3,15 +3,61 @@
         <title>
             Doom Fire
         </title>
+        <style>
+            body {
+                font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+                text-align: center;
+            }
+
+            .inputs-container {
+                display: flex;
+            }
+
+            .inputs-container_labels {
+                flex: 1;
+            }
+
+            .inputs-container_inputs {
+                flex: 1;
+            }
+        </style>
     </head>
     <body>
         <canvas id="canvas" style="border:1px solid #000000;"></canvas>
         <br>
         <br>
-        <label>Fire decay: </label><input id="fire_decay" type="number" min="1" value="1">
-        <br>
-        <br>
-        <label>Wind force (can be negative): </label><input id="wind_force" type="number" value="2">
+        <div class="inputs-container">
+            <div class="inputs-container_labels">
+                <label>Fire decay: </label>
+                <br>
+                <label>Wind force (can be negative): </label>
+                <br>
+                <label>Debug: </label>
+                <br>
+                <input type="button" id="fire_source++" value="Increase fire source">
+                <br>
+                <label>Canvas height:</label>
+                <br>
+                <label>Canvas width:</label>
+                <br>
+                <label>Canvas pixel size:</label>
+            </div>
+            <div class="inputs-container_inputs">
+                <input id="fire_decay" type="number" min="1" value="6">
+                <br>
+                <input id="wind_force" type="number" value="2">
+                <br>
+                <input id="activate_debug" type="checkbox">
+                <br>
+                <input type="button" id="fire_source--" value="Decrease fire source">
+                <br>
+                <input type="number" id="canvas_height" value="60">
+                <br>
+                <input type="number" id="canvas_width" value="60">
+                <br>
+                <input type="number" id="canvas_pixel_size" value="10">
+            </div>
+        </div>
         <script src="fire_algorithm.js"></script>
     </body>
 </html>
